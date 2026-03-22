@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Morning, Putri ♥</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #8B0A1A;
+    --rose-light: #C41E3A;
+    --rose-pale: #E8839A;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-pale: #F5E6B2;
+    --punk: #CC44FF;
+    --punk-bright: #EE66FF;
+    --black: #050208;
+    --text: #F2E6D0;
+    --text-muted: #9A8070;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    position:fixed; width:10px; height:10px;
+    background:var(--punk-bright); border-radius:50%;
+    pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 16px var(--punk), 0 0 32px rgba(204,68,255,0.4);
+  }
+  .cursor-trail {
+    position:fixed; width:28px; height:28px;
+    border:1px solid var(--punk); border-radius:50%;
+    pointer-events:none; z-index:9998;
+    transform:translate(-50%,-50%);
+    transition:all 0.12s ease; opacity:0.4;
+  }
+
+  /* RAIN CANVAS */
+  #rain {
+    position:fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none; z-index:0;
+  }
+
+  /* SLIDES */
+  .slides-wrapper { position:fixed; inset:0; z-index:2; }
+
+  .slide {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:2rem 1.5rem;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.65s ease;
+  }
+  .slide.active { opacity:1; pointer-events:all; }
+
+  .slide::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 85% 75% at 50% 50%,
+      rgba(5,2,8,0.52) 0%, rgba(5,2,8,0.84) 100%);
+    z-index:-1;
+  }
+
+  /* slide-in animation */
+  @keyframes sIn {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .slide.active > * { opacity:0; animation:sIn 0.65s ease forwards; }
+  .slide.active > *:nth-child(1){animation-delay:0.05s}
+  .slide.active > *:nth-child(2){animation-delay:0.15s}
+  .slide.active > *:nth-child(3){animation-delay:0.25s}
+  .slide.active > *:nth-child(4){animation-delay:0.35s}
+  .slide.active > *:nth-child(5){animation-delay:0.45s}
+
+  /* SHARED */
+  .label {
+    font-family:'Cinzel',serif;
+    font-size:clamp(0.55rem,1.2vw,0.7rem);
+    letter-spacing:0.5em; color:var(--gold);
+    text-transform:uppercase; margin-bottom:1.5rem; text-align:center;
+  }
+  .label::before{content:'— '; color:rgba(201,168,76,0.4);}
+  .label::after {content:' —'; color:rgba(201,168,76,0.4);}
+
+  @keyframes hb { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+  @keyframes hb-big {
+    0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.035}
+    40%{transform:translate(-50%,-50%) scale(1.07); opacity:0.06}
+  }
+
+  /* ---- SLIDE 1 ---- */
+  .s1-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(3.5rem,11vw,8.5rem);
+    font-weight:300; line-height:0.95;
+    letter-spacing:-0.02em; text-align:center;
+  }
+  .s1-title .l1{display:block; color:var(--text);}
+  .s1-title .l2{display:block; color:var(--gold-light); font-style:italic; font-weight:600;}
+
+  .divider {
+    display:flex; align-items:center; justify-content:center;
+    gap:1rem; margin:1.8rem 0;
+  }
+  .divider::before,.divider::after{
+    content:''; width:80px; height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+  .dh { font-size:1rem; color:var(--rose-light); animation:hb 2s ease-in-out infinite; }
+
+  .s1-name {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2.5rem,7vw,5rem);
+    font-style:italic; font-weight:300; color:var(--rose-pale);
+    text-align:center; position:relative; display:inline-block;
+  }
+  .s1-name::after{
+    content:''; position:absolute; bottom:-4px; left:10%; right:10%;
+    height:1px; background:linear-gradient(90deg,transparent,var(--gold-pale),transparent);
+  }
+  .s1-sub {
+    font-family:'Crimson Pro',serif;
+    font-size:clamp(1rem,2vw,1.25rem);
+    font-style:italic; font-weight:300; color:var(--text-muted);
+    text-align:center; line-height:1.9; margin-top:2rem; max-width:400px;
+  }
+  .heart-bg {
+    position:absolute; top:50%; left:50%;
+    font-size:500px; line-height:1; color:var(--rose-light);
+    opacity:0.035; pointer-events:none; user-select:none;
+    animation:hb-big 3s ease-in-out infinite; filter:blur(3px);
+  }
+
+  /* ---- SLIDE 2 ---- */
+  .msg-card {
+    background:linear-gradient(135deg,
+      rgba(139,10,26,0.1) 0%, rgba(13,6,16,0.75) 50%, rgba(201,168,76,0.06) 100%);
+    border:1px solid rgba(201,168,76,0.18); border-radius:2px;
+    padding:clamp(2rem,5vw,3.2rem) clamp(1.5rem,5vw,3rem);
+    max-width:640px; width:100%; position:relative; text-align:center;
+  }
+  .msg-card::before{content:''; position:absolute; top:0;left:0;right:0;
+    height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .msg-card::after {content:''; position:absolute; bottom:0;left:0;right:0;
+    height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+  .corner{position:absolute;width:22px;height:22px;}
+  .corner::before,.corner::after{content:'';position:absolute;background:var(--gold);}
+  .corner::before{width:100%;height:1px;top:0;left:0;}
+  .corner::after{width:1px;height:100%;top:0;left:0;}
+  .corner.tl{top:10px;left:10px;}
+  .corner.tr{top:10px;right:10px;transform:scaleX(-1);}
+  .corner.bl{bottom:10px;left:10px;transform:scaleY(-1);}
+  .corner.br{bottom:10px;right:10px;transform:scale(-1);}
+
+  .qm{font-family:'Cormorant Garamond',serif;font-size:5rem;
+    color:rgba(201,168,76,0.12);line-height:0.5;display:block;margin-bottom:0.5rem;font-weight:600;}
+  .msg-text{font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.25rem,2.5vw,1.7rem);font-style:italic;font-weight:300;
+    line-height:1.9;color:var(--text);}
+  .msg-text .hl{color:var(--gold-light);font-weight:400;}
+  .msg-sig{margin-top:1.8rem;font-family:'Cormorant Garamond',serif;
+    font-size:1rem;color:var(--rose-pale);letter-spacing:0.1em;font-style:italic;}
+
+  /* ---- SLIDE 3 ---- */
+  .vow-list{max-width:560px;width:100%;display:flex;flex-direction:column;gap:1.6rem;}
+  .vow-item{display:flex;align-items:center;gap:1.2rem;text-align:left;}
+  .vi-text{font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.1rem,2vw,1.4rem);font-style:italic;color:var(--text);line-height:1.5;}
+  .vow-div{height:1px;width:65%;
+    background:linear-gradient(90deg,transparent,rgba(201,168,76,0.25),transparent);margin:0 auto;}
+
+  /* ---- SLIDE 4 ---- */
+  .cl-heart{font-size:4.5rem;display:block;color:var(--rose-light);
+    animation:hb 2s ease-in-out infinite;
+    filter:drop-shadow(0 0 28px rgba(196,30,58,0.6));margin-bottom:1.5rem;}
+  .cl-title{font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2rem,5vw,3.5rem);font-weight:300;font-style:italic;
+    text-align:center;line-height:1.35;}
+  .cl-title span{color:var(--gold-light);}
+  .cl-sub{font-family:'Cinzel',serif;font-size:clamp(0.6rem,1.3vw,0.75rem);
+    letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;
+    margin-top:1.8rem;text-align:center;}
+  .cl-note{font-family:'Crimson Pro',serif;
+    font-size:clamp(0.9rem,1.8vw,1.1rem);font-style:italic;
+    color:var(--text-muted);margin-top:1rem;text-align:center;}
+
+  /* NAVIGATION */
+  .nav {
+    position:fixed; bottom:2rem; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:1rem; z-index:10;
+  }
+  .nav-btn {
+    background:rgba(5,2,8,0.75);
+    border:1px solid rgba(201,168,76,0.35);
+    color:var(--gold); font-family:'Cinzel',serif;
+    font-size:0.58rem; letter-spacing:0.3em; text-transform:uppercase;
+    padding:0.6rem 1.4rem; cursor:pointer;
+    transition:all 0.3s ease; backdrop-filter:blur(10px);
+  }
+  .nav-btn:hover:not(:disabled){
+    border-color:var(--gold); color:var(--gold-light);
+    box-shadow:0 0 18px rgba(201,168,76,0.25), inset 0 0 18px rgba(201,168,76,0.06);
+  }
+  .nav-btn:disabled{opacity:0.2;cursor:not-allowed;}
+
+  .nav-dots{display:flex;gap:0.5rem;align-items:center;}
+  .dot{width:6px;height:6px;border-radius:50%;
+    background:rgba(201,168,76,0.25);transition:all 0.4s ease;cursor:pointer;}
+  .dot.active{background:var(--gold);
+    box-shadow:0 0 10px rgba(201,168,76,0.5);transform:scale(1.35);}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+<canvas id="rain"></canvas>
+
+<div class="slides-wrapper">
+
+  <!-- SLIDE 1 -->
+  <div class="slide active" id="s0">
+    <div class="heart-bg">♥</div>
+    <p class="label">For My Dearest</p>
+    <h1 class="s1-title">
+      <span class="l1">Good</span>
+      <span class="l2">Morning</span>
+    </h1>
+    <div class="divider"><span class="dh">♥</span></div>
+    <p class="s1-name">Putri</p>
+    <p class="s1-sub">Every beautiful morning becomes more precious because you are in it</p>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="s1">
+    <p class="label">A Morning Message</p>
+    <div class="msg-card">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <span class="qm">"</span>
+      <p class="msg-text">
+        When the sun first touches the sky,<br>
+        my first thought always goes to <span class="hl">you</span>.<br><br>
+        May your day be filled with <span class="hl">smiles</span>,<br>
+        warmth, and all the beautiful things<br>
+        you so truly deserve.
+      </p>
+      <p class="msg-sig">— with all my heart ♥</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide" id="s2">
+    <p class="label">What I Wish For You</p>
+    <div class="vow-list">
+      <div class="vow-item">
+        <p class="vi-text">May your day be as beautiful as your smile that I always miss</p></div>
+      <div class="vow-div"></div>
+      <div class="vow-item">
+        <p class="vi-text">May every step you take today be filled with joy and success</p></div>
+      <div class="vow-div"></div>
+      <div class="vow-item">
+        <p class="vi-text">May you know how incredibly precious you are to me every single day</p></div>
+      <div class="vow-div"></div>
+      <div class="vow-item">
+        <p class="vi-text">I love you — yesterday, today, and every day that follows</p></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide" id="s3">
+    <span class="cl-heart">♥</span>
+    <h2 class="cl-title">You are the best reason<br><span>to wake up every morning</span></h2>
+    <p class="cl-sub">I love you, Putri &nbsp;✦&nbsp; Always &amp; Forever</p>
+    <p class="cl-note">Every day with you is the most beautiful gift 🌹</p>
+  </div>
+
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn" id="btnPrev" disabled onclick="go(-1)">&#8592; Prev</button>
+  <div class="nav-dots" id="dots"></div>
+  <button class="nav-btn" id="btnNext" onclick="go(1)">Next &#8594;</button>
+</nav>
+
+<script>
+// CURSOR
+const cursor=document.getElementById('cursor');
+const trail=document.getElementById('cursorTrail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+setInterval(()=>{
+  tx+=(mx-tx)*0.15;ty+=(my-ty)*0.15;
+  trail.style.left=tx+'px';trail.style.top=ty+'px';
+},16);
+
+// PIXEL RAIN
+const canvas=document.getElementById('rain');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',()=>{resize();initCols();});
+
+const CHARS='♥✦◆▲●○♦❋★☆◇♠I1|l!YT0♡❀✿';
+const FS=14;
+let cols=[];
+
+function initCols(){
+  cols=[];
+  const n=Math.floor(canvas.width/FS);
+  for(let i=0;i<n;i++){
+    cols.push({
+      y:Math.random()*-canvas.height,
+      spd:Math.random()*1.4+0.5,
+      len:Math.floor(Math.random()*20+8),
+      ch:Array.from({length:40},()=>CHARS[Math.floor(Math.random()*CHARS.length)]),
+      bright:Math.random()>0.82,
+      gold:Math.random()>0.72,
+    });
+  }
+}
+initCols();
+
+function rainLoop(){
+  ctx.fillStyle='rgba(5,2,8,0.17)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  cols.forEach((c,ci)=>{
+    const x=ci*FS;
+    c.y+=c.spd;
+    for(let j=0;j<c.len;j++){
+      const cy=c.y-j*FS;
+      if(cy<0||cy>canvas.height)continue;
+      if(Math.random()<0.04) c.ch[j%c.ch.length]=CHARS[Math.floor(Math.random()*CHARS.length)];
+      const r=j/c.len;
+      if(c.gold){
+        if(j===0){ctx.fillStyle=`rgba(232,201,106,0.92)`;ctx.shadowBlur=10;ctx.shadowColor='#C9A84C';}
+        else{ctx.fillStyle=`rgba(201,168,76,${(1-r)*0.5})`;ctx.shadowBlur=0;}
+      } else {
+        if(j===0){
+          ctx.fillStyle=c.bright?'rgba(255,120,255,1)':'rgba(238,102,255,0.95)';
+          ctx.shadowBlur=c.bright?22:10;ctx.shadowColor='#EE66FF';
+        } else {
+          const l=Math.floor(55+(1-r)*35);
+          ctx.fillStyle=`hsla(285,100%,${l}%,${(1-r)*0.72})`;
+          ctx.shadowBlur=0;
+        }
+      }
+      ctx.font=`${FS}px monospace`;
+      ctx.fillText(c.ch[j%c.ch.length],x,cy);
+      ctx.shadowBlur=0;
+    }
+    if(c.y-c.len*FS>canvas.height){
+      c.y=Math.random()*-200;
+      c.spd=Math.random()*1.4+0.5;
+      c.len=Math.floor(Math.random()*20+8);
+      c.bright=Math.random()>0.82;
+      c.gold=Math.random()>0.72;
+    }
+  });
+  requestAnimationFrame(rainLoop);
+}
+rainLoop();
+
+// SLIDES
+let cur=0;
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+const btnP=document.getElementById('btnPrev');
+const btnN=document.getElementById('btnNext');
+const dotsW=document.getElementById('dots');
+
+for(let i=0;i<total;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsW.appendChild(d);
+}
+
+function goTo(n){
+  slides[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  btnP.disabled=cur===0;
+  btnN.disabled=cur===total-1;
+  btnN.innerHTML=cur===total-1?'✦ The End ✦':'Next &#8594;';
+}
+
+function go(d){const n=cur+d;if(n>=0&&n<total)goTo(n);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);
+});
+</script>
+</body>
+</html>
